@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | SyllabusAI - Manage Your Study Plans</title>
+    <meta name="description"
+        content="Your central hub for academic success. View your AI-generated study schedule, upload new syllabi, and track your progress in real-time.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background: #f1f5f9;
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            padding: 0.875rem 1.25rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .sidebar-nav a.active {
+            background: rgba(79, 70, 229, 0.08);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-dash {
+            flex-grow: 1;
+            padding: 3rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 3rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        /* Dashboard Grid */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2.5rem;
+        }
+
+        /* Upload Area */
+        .upload-zone {
+            background: white;
+            border: 2px dashed #cbd5e1;
+            border-radius: 2.5rem;
+            padding: 5rem 3rem;
+            text-align: center;
+            transition: var(--transition);
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(79, 70, 229, 0.02);
+            transform: translateY(-4px);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h3 {
+            margin-bottom: 1.5rem;
+            color: #0f172a;
+            font-size: 1.25rem;
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 1.25rem;
+            background: #f8fafc;
+            margin-bottom: 1rem;
+            border-radius: 1.25rem;
+            border: 1px solid #f1f5f9;
+            transition: var(--transition);
+        }
+
+        .task-item:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .task-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e1;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .task-check.done {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .task-check.done::after {
+            content: "✓";
+            color: white;
+            display: block;
+            text-align: center;
+            line-height: 20px;
+            font-weight: 700;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: #f1f5f9;
+            height: 12px;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 65%;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 1200px) {
+            .dash-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <aside class="sidebar">
+        <a href="index.html" class="logo">Syllabus<span>AI</span></a>
+        <nav>
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active"><span>🏠</span> Dashboard</a></li>
+                <li><a href="#"><span>📅</span> Study Plan</a></li>
+                <li><a href="#"><span>📚</span> Subjects</a></li>
+                <li><a href="#"><span>📈</span> Analytics</a></li>
+                <li><a href="#"><span>⚙️</span> Settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar"></div>
+                <div style="font-size: 0.875rem;">
+                    <strong style="display: block;">Alex Student</strong>
+                    <span style="color: var(--text-muted);">Pro Member</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-dash">
+        <div class="dash-header">
+            <h2 style="margin-bottom: 0;">Hi, <span class="gradient-text">Alex!</span> 👋</h2>
+            <div class="dash-actions">
+                <button class="btn btn-primary" style="padding: 0.6rem 1.2rem;">+ Full Sync</button>
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            <div class="dash-left">
+                <div class="upload-zone" id="dropzone">
+                    <div class="upload-icon">📄</div>
+                    <h3>Upload New Syllabus</h3>
+                    <p>Supported: PDF, DOCX, WORD</p>
+                    <div class="btn btn-outline" style="margin-top: 1rem;">Select Files</div>
+                </div>
+
+                <div class="card">
+                    <h3 style="border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;">Today's Focus: <span
+                            class="gradient-text">CompSci 101</span></h3>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <div class="task-check done"></div>
+                            <div>
+                                <strong style="display: block;">Analyze Algorithm Complexity</strong>
+                                <span class="small-note">45 mins • Priority High</span>
+                            </div>
+                        </li>
+                        <li class="task-item">
+                            <div class="task-check"></div>
+                            <div>
+                                <strong style="display: block;">Complete Mock Exam Section A</strong>
+                                <span class="small-note">30 mins • Priority Medium</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="dash-right">
+                <div class="card">
+                    <h3>Your Weekly Progress</h3>
+                    <div class="progress-container">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p style="font-size: 0.875rem; text-align: center;">You've crushed <strong>18/25</strong> tasks this
+                        week!</p>
+                </div>
+
+                <div class="card">
+                    <h3>Quick Deadlines</h3>
+                    <ul class="task-list">
+                        <li class="task-item"
+                            style="border-left: 5px solid #ef4444; border-radius: 0.75rem 1.25rem 1.25rem 0.75rem;">
+                            <div>
+                                <strong style="display: block; font-size: 0.95rem;">History Research Paper</strong>
+                                <span class="small-note">Due In: 48 Hours</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
